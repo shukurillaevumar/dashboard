@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, Search, Mic, Scan, ChevronDown, Minimize } from "lucide-react";
 import Image from "next/image";
 import User from "../../public/user/avatar-8.jpg";
@@ -21,6 +21,9 @@ type NavBarProps = {
 const getFlagUrl = (code: string) => `https://flagcdn.com/w40/${code}.png`; // CDN returns 40px wide PNG
 
 const NavBar = ({ isSidebarOpen, toggleSidebar }: NavBarProps) => {
+  const userDropdownRef = useRef<HTMLDivElement>(null);
+  const countryDropdownRef = useRef<HTMLDivElement>(null);
+
   const [input, setInput] = useState("");
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [selectedCountry, setSelectedCountry] = useState(countries[0]);
@@ -55,6 +58,33 @@ const NavBar = ({ isSidebarOpen, toggleSidebar }: NavBarProps) => {
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
 
   const toggleUserDropdown = () => setUserDropdownOpen((prev) => !prev);
+
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node;
+
+      // Закрываем выбор страны
+      if (
+        countryDropdownRef.current &&
+        !countryDropdownRef.current.contains(target)
+      ) {
+        setDropdownOpen(false);
+      }
+
+      // Закрываем пользовательское меню
+      if (
+        userDropdownRef.current &&
+        !userDropdownRef.current.contains(target)
+      ) {
+        setUserDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   return (
     <div className="w-full h-[86px] flex items-center justify-between px-6 border-b border-gray-200 bg-white">
@@ -93,44 +123,46 @@ const NavBar = ({ isSidebarOpen, toggleSidebar }: NavBarProps) => {
         </div>
 
         <div className="relative flex items-center gap-4">
-          <button
-            onClick={toggleDropdown}
-            className="flex items-center gap-1 text-sm cursor-pointer relative"
-          >
-            <img
-              src={getFlagUrl(selectedCountry.code)}
-              alt={selectedCountry.label}
-              className="w-6 h-4 object-cover rounded-sm"
-            />
-            <ChevronDown className="w-4 h-4 text-gray-600" />
-          </button>
+          <div ref={countryDropdownRef} className="relative">
+            <button
+              onClick={toggleDropdown}
+              className="flex items-center gap-1 text-sm cursor-pointer relative"
+            >
+              <img
+                src={getFlagUrl(selectedCountry.code)}
+                alt={selectedCountry.label}
+                className="w-6 h-4 object-cover rounded-sm"
+              />
+              <ChevronDown className="w-4 h-4 text-gray-600" />
+            </button>
 
-          <AnimatePresence>
-            {dropdownOpen && (
-              <motion.ul
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ duration: 0.2 }}
-                className="absolute top-12 right-14 bg-white border border-gray-200 rounded-md shadow-lg w-44 z-50"
-              >
-                {countries.map((country) => (
-                  <li
-                    key={country.code}
-                    onClick={() => handleSelect(country)}
-                    className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm flex items-center gap-2"
-                  >
-                    <img
-                      src={getFlagUrl(country.code)}
-                      alt={country.label}
-                      className="w-5 h-3.5 object-cover rounded-sm"
-                    />
-                    {country.label}
-                  </li>
-                ))}
-              </motion.ul>
-            )}
-          </AnimatePresence>
+            <AnimatePresence>
+              {dropdownOpen && (
+                <motion.ul
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.2 }}
+                  className="absolute top-12 right-0 bg-white border border-gray-200 rounded-md shadow-lg w-44 z-50"
+                >
+                  {countries.map((country) => (
+                    <li
+                      key={country.code}
+                      onClick={() => handleSelect(country)}
+                      className="px-4 py-2 hover:bg-gray-100 cursor-pointer text-sm flex items-center gap-2"
+                    >
+                      <img
+                        src={getFlagUrl(country.code)}
+                        alt={country.label}
+                        className="w-5 h-3.5 object-cover rounded-sm"
+                      />
+                      {country.label}
+                    </li>
+                  ))}
+                </motion.ul>
+              )}
+            </AnimatePresence>
+          </div>
 
           {isFullscreen ? (
             <Minimize
@@ -144,7 +176,7 @@ const NavBar = ({ isSidebarOpen, toggleSidebar }: NavBarProps) => {
             />
           )}
 
-          <div className="relative">
+          <div ref={userDropdownRef} className="relative">
             <Image
               src={User}
               alt="image"

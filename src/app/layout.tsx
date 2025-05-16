@@ -22,8 +22,8 @@ export default function RootLayout({
   // Проверка ширины экрана
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 768);
-      if (window.innerWidth < 768) {
+      setIsMobile(window.innerWidth < 1200);
+      if (window.innerWidth < 1200) {
         setIsSidebarOpen(false);
       } else {
         setIsSidebarOpen(true);
@@ -55,7 +55,7 @@ export default function RootLayout({
                 : "static"
             }`}
           >
-            <SideBar isOpen={isSidebarOpen} />
+            <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
           </div>
 
           <div

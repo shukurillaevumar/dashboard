@@ -50,7 +50,7 @@ export function DonutChart() {
         </div>
       </div>
 
-      <div className="flex justify-center gap-4 mt-4 text-sm">
+      <div className="flex justify-center gap-4 mt-4 text-sm flex-wrap">
         <div className="flex items-center gap-1">
           <span
             className="w-3 h-3 rounded-full"

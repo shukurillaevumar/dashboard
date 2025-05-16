@@ -87,7 +87,7 @@ const transactions = [
 
 export default function TableCards() {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-5">
+    <div className="grid grid-cols-1  gap-6 mt-5">
       {/* Recent Buyers */}
       <motion.div
         initial={{ opacity: 0, y: 40 }}
@@ -145,7 +145,7 @@ export default function TableCards() {
       </motion.div>
 
       {/* Account Transactions */}
-      <motion.div
+      {/* <motion.div
         initial={{ opacity: 0, y: 40 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.2 }}
@@ -187,7 +187,7 @@ export default function TableCards() {
             </tbody>
           </table>
         </div>
-      </motion.div>
+      </motion.div> */}
     </div>
   );
 }
