@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { useSwipeable } from "react-swipeable";
+import { useRouter, useSearchParams } from "next/navigation";
 
 type TabType = {
   name: string;
@@ -21,32 +22,70 @@ const tabs: TabType[] = [
 
 export default function Tabs() {
   const [activeTab, setActiveTab] = useState("all");
+  const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
+
+  const router = useRouter();
+  const searchParams = useSearchParams();
 
   const currentIndex = tabs.findIndex((tab) => tab.value === activeTab);
+
+  // Централизованная функция для обновления таба и URL
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    router.push(`?status=${value}`);
+  };
 
   const swipeHandlers = useSwipeable({
     onSwipedLeft: () => {
       if (currentIndex < tabs.length - 1) {
-        setActiveTab(tabs[currentIndex + 1].value);
+        handleTabChange(tabs[currentIndex + 1].value);
       }
     },
     onSwipedRight: () => {
       if (currentIndex > 0) {
-        setActiveTab(tabs[currentIndex - 1].value);
+        handleTabChange(tabs[currentIndex - 1].value);
       }
     },
-    preventScrollOnSwipe: true, // ✅ правильный проп
+    preventScrollOnSwipe: true,
     trackTouch: true,
     trackMouse: false,
   });
 
+  // Устанавливаем таб из URL при загрузке
+  const statusFromURL = searchParams.get("status");
+
+  useEffect(() => {
+    if (statusFromURL && tabs.some((tab) => tab.value === statusFromURL)) {
+      setActiveTab(statusFromURL);
+    }
+  }, [statusFromURL]); // ✅ безопасно — зависимость по string, не по объекту
+
+  // Скролл к активному табу
+  useEffect(() => {
+    const currentRef = tabRefs.current[currentIndex];
+    if (currentRef) {
+      currentRef.scrollIntoView({
+        behavior: "smooth",
+        inline: "center",
+        block: "nearest",
+      });
+    }
+  }, [activeTab, currentIndex]);
+
   return (
-    <div className="overflow-x-auto sm:overflow-visible" {...swipeHandlers}>
+    <div
+      className="overflow-x-auto sm:overflow-visible"
+      style={{ touchAction: "pan-y" }}
+      {...swipeHandlers}
+    >
       <div className="flex items-center space-x-4 border-b border-gray-200 flex-nowrap sm:flex-wrap min-w-max">
-        {tabs.map((tab) => (
+        {tabs.map((tab, index) => (
           <button
             key={tab.value}
-            onClick={() => setActiveTab(tab.value)}
+            ref={(el) => {
+              tabRefs.current[index] = el;
+            }}
+            onClick={() => handleTabChange(tab.value)}
             className={`relative py-2 px-3 text-md sm:text-md font-medium transition cursor-pointer whitespace-nowrap ${
               activeTab === tab.value
                 ? "text-fuchsia-600 border-b-2 border-fuchsia-600"

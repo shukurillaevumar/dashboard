@@ -5,7 +5,7 @@ import { Search, Mic } from "lucide-react";
 export default function SearchBar() {
   const [input, setInput] = useState("");
   return (
-    <div className="relative max-sm:hidden">
+    <div className="relative">
       <input
         type="text"
         value={input}

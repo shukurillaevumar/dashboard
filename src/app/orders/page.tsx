@@ -2,16 +2,22 @@ import OrdersTable from "../../components/OrdersTable";
 import Tabs from "../../components/Tabs";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
+import Pagination from "@/components/Pagination";
 
 export default function OrdersPage() {
   return (
-    <div className="p-4 space-y-4 bg-white border border-gray-200 rounded-xl">
-      <Tabs />
-      <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
-        <SearchBar />
-        <Filters />
+    <div className="flex flex-col justify-between min-h-screen p-4 bg-white border border-gray-200 rounded-xl">
+      <div className="space-y-4">
+        <p className="text-lg">List of orders</p>
+        <Tabs />
+        <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
+          <SearchBar />
+          <Filters />
+        </div>
+        <OrdersTable />
       </div>
-      <OrdersTable />
+
+      <Pagination />
     </div>
   );
 }
