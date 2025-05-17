@@ -52,9 +52,7 @@ export default function OrdersPage() {
         {/* ✅ SearchBar и Filters */}
         <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
           <SearchBar />
-          <Suspense fallback={null}>
-            <Filters />
-          </Suspense>
+          <Filters />
         </div>
 
         {/* ✅ Таблица заказов */}
