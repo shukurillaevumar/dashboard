@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import OrdersTable from "@/components/OrdersTable";
 import Pagination from "@/components/Pagination";
@@ -45,12 +45,16 @@ export default function OrdersPage() {
         <p className="text-lg font-semibold">List of orders</p>
 
         {/* ✅ Tabs (фильтрация по статусу) */}
-        <Tabs />
+        <Suspense fallback={null}>
+          <Tabs />
+        </Suspense>
 
         {/* ✅ SearchBar и Filters */}
         <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
           <SearchBar />
-          <Filters />
+          <Suspense fallback={null}>
+            <Filters />
+          </Suspense>
         </div>
 
         {/* ✅ Таблица заказов */}
