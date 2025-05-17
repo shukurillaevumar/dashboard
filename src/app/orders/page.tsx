@@ -12,19 +12,17 @@ export default function OrdersPage() {
       <div className="space-y-4">
         <p className="text-lg">List of orders</p>
 
-        {/* ⬇️ оба клиента-компонента с useSearchParams обёрнуты в Suspense */}
         <Suspense fallback={null}>
           <Tabs />
         </Suspense>
 
         <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
           <SearchBar />
-          <Suspense fallback={null}>
-            <Filters />
-          </Suspense>
+          <Filters />
         </div>
-
-        <OrdersTable />
+        <Suspense fallback={null}>
+          <OrdersTable />
+        </Suspense>
       </div>
 
       <Pagination />

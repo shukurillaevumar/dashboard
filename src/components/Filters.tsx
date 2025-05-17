@@ -1,13 +1,8 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 import { useState } from "react";
 import { SlidersHorizontal, Download, X } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-/**
- * Filters component – floating action buttons + bottom‑sheet modal
- * Added Apply & Cancel buttons.
- */
 export default function Filters({
   onApply,
 }: {
@@ -15,7 +10,6 @@ export default function Filters({
 }) {
   const [open, setOpen] = useState(false);
 
-  // TODO: collect real values
   const handleApply = () => {
     onApply?.({});
     setOpen(false);
@@ -31,7 +25,6 @@ export default function Filters({
 
   return (
     <>
-      {/* Action buttons */}
       <div className="flex gap-2 max-sm:hidden">
         <Button
           icon={<SlidersHorizontal className="size-4" />}
@@ -41,17 +34,13 @@ export default function Filters({
         <Button
           icon={<Download className="size-4" />}
           label="Export"
-          onClick={() => {
-            /* TODO: export logic */
-          }}
+          onClick={() => {}}
         />
       </div>
 
-      {/* Bottom-sheet modal */}
       <AnimatePresence>
         {open && (
           <>
-            {/* Backdrop */}
             <motion.div
               key="backdrop"
               className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
@@ -61,7 +50,6 @@ export default function Filters({
               onClick={() => setOpen(false)}
             />
 
-            {/* Sheet */}
             <motion.aside
               key="sheet"
               className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
@@ -70,7 +58,6 @@ export default function Filters({
               animate="visible"
               exit="hidden"
             >
-              {/* Header */}
               <header className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Filters</h2>
                 <button
@@ -82,9 +69,7 @@ export default function Filters({
                 </button>
               </header>
 
-              {/* Content */}
               <div className="space-y-6 text-sm text-gray-700 max-h-[55vh] overflow-y-auto pr-2">
-                {/* Branch */}
                 <Field label="Branch">
                   <select
                     defaultValue=""
@@ -98,7 +83,6 @@ export default function Filters({
                   </select>
                 </Field>
 
-                {/* Check groups */}
                 <CheckGroup label="Payment type" options={["Cash", "Card"]} />
                 <CheckGroup
                   label="Order type"
@@ -132,7 +116,6 @@ export default function Filters({
                 />
               </div>
 
-              {/* Footer */}
               <div className="mt-6 flex justify-end gap-3">
                 <button
                   onClick={() => setOpen(false)}
@@ -155,7 +138,6 @@ export default function Filters({
   );
 }
 
-/* ----------------------------- Sub-components ---------------------------- */
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;
   label: string;
