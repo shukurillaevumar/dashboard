@@ -3,6 +3,7 @@
 import "../styles/globals.css";
 import { Inter } from "next/font/google";
 import { useState, useEffect } from "react";
+import { usePathname } from "next/navigation";
 import SideBar from "../components/SideBar";
 import NavBar from "../components/Navbar";
 import Footer from "@/components/footer";
@@ -16,36 +17,44 @@ export default function RootLayout({
 }) {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [isMobile, setIsMobile] = useState(false);
+  const pathname = usePathname();
 
   const toggleSidebar = () => setIsSidebarOpen((prev) => !prev);
 
-  // Проверка ширины экрана
+  // Обрабатываем ресайз экрана и устанавливаем mobile-состояние
   useEffect(() => {
     const handleResize = () => {
-      setIsMobile(window.innerWidth < 1200);
-      if (window.innerWidth < 1200) {
-        setIsSidebarOpen(false);
-      } else {
-        setIsSidebarOpen(true);
-      }
+      const isNowMobile = window.innerWidth < 1200;
+      setIsMobile(isNowMobile);
+      setIsSidebarOpen(!isNowMobile); // автоматически скрываем сайдбар на мобилках
     };
 
-    handleResize();
     window.addEventListener("resize", handleResize);
+    handleResize(); // установить начальное состояние при монтировании
+
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+  // Закрываем сайдбар при переходе на другую страницу на мобильных устройствах
+  useEffect(() => {
+    if (isMobile) {
+      setIsSidebarOpen(false);
+    }
+  }, [pathname]);
 
   return (
     <html lang="en">
       <body className={inter.className}>
         <div className="flex min-h-screen relative">
+          {/* Overlay при открытом сайдбаре на мобилках */}
           {isMobile && isSidebarOpen && (
             <div
-              className="fixed inset-0 bg-black/50 bg-opacity-50 z-30"
+              className="fixed inset-0 bg-black/50 z-30"
               onClick={toggleSidebar}
             />
           )}
 
+          {/* Сайдбар */}
           <div
             className={`${
               isMobile
@@ -54,10 +63,17 @@ export default function RootLayout({
                   }`
                 : "static"
             }`}
+            aria-hidden={isMobile && !isSidebarOpen}
+            role="complementary"
           >
-            <SideBar isOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+            <SideBar
+              isOpen={isSidebarOpen}
+              toggleSidebar={toggleSidebar}
+              isMobile={isMobile}
+            />
           </div>
 
+          {/* Контент */}
           <div
             className={`flex flex-col transition-all duration-500 ease-in-out w-full ${
               !isMobile && isSidebarOpen ? "ml-[300px]" : "ml-0"

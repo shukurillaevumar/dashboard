@@ -23,6 +23,7 @@ import {
 type SideBarProps = {
   isOpen: boolean;
   toggleSidebar: () => void;
+  isMobile: boolean;
 };
 
 const menuItems = [
@@ -43,15 +44,15 @@ const menuItems = [
   },
 ];
 
-const SideBar = ({ isOpen, toggleSidebar }: SideBarProps) => {
+const SideBar = ({ isOpen, toggleSidebar, isMobile }: SideBarProps) => {
   const pathname = usePathname();
 
-  // Автоматически закрываем сайдбар при переходе на другую страницу
   useEffect(() => {
-    if (isOpen) {
+    // Закрываем сайдбар при переходе только на мобильных
+    if (isMobile && isOpen) {
       toggleSidebar();
     }
-  }, [pathname]);
+  }, [pathname, isMobile]);
 
   const linkClass = (href: string, chevron = false) =>
     `w-full py-2 px-2 text-left rounded-md transition-all duration-200 ease-in-out cursor-pointer flex items-center ${

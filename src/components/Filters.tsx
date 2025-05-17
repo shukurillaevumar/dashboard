@@ -8,11 +8,12 @@ export default function Filters({
 }: {
   onApply?: (values: unknown) => void;
 }) {
-  const [open, setOpen] = useState(false);
+  const [openFilters, setOpenFilters] = useState(false);
+  const [openExport, setOpenExport] = useState(false); // ✅
 
   const handleApply = () => {
     onApply?.({});
-    setOpen(false);
+    setOpenFilters(false);
   };
 
   const sheetVariants = {
@@ -25,33 +26,34 @@ export default function Filters({
 
   return (
     <>
+      {/* Buttons */}
       <div className="flex gap-2 max-sm:hidden">
         <Button
           icon={<SlidersHorizontal className="size-4" />}
           label="Filters"
-          onClick={() => setOpen(true)}
+          onClick={() => setOpenFilters(true)}
         />
         <Button
           icon={<Download className="size-4" />}
           label="Export"
-          onClick={() => {}}
+          onClick={() => setOpenExport(true)} // ✅
         />
       </div>
 
+      {/* AnimatePresence for Filters */}
       <AnimatePresence>
-        {open && (
+        {openFilters && (
           <>
             <motion.div
-              key="backdrop"
+              key="backdrop-filters"
               className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              onClick={() => setOpen(false)}
+              onClick={() => setOpenFilters(false)}
             />
-
             <motion.aside
-              key="sheet"
+              key="sheet-filters"
               className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
               variants={sheetVariants}
               initial="hidden"
@@ -61,7 +63,7 @@ export default function Filters({
               <header className="mb-4 flex items-center justify-between">
                 <h2 className="text-lg font-semibold">Filters</h2>
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={() => setOpenFilters(false)}
                   className="rounded-full p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
                   aria-label="Close filters"
                 >
@@ -69,6 +71,7 @@ export default function Filters({
                 </button>
               </header>
 
+              {/* Filters content */}
               <div className="space-y-6 text-sm text-gray-700 max-h-[55vh] overflow-y-auto pr-2">
                 <Field label="Branch">
                   <select
@@ -82,7 +85,6 @@ export default function Filters({
                     <option value="Yunusobod">Yunusobod</option>
                   </select>
                 </Field>
-
                 <CheckGroup label="Payment type" options={["Cash", "Card"]} />
                 <CheckGroup
                   label="Order type"
@@ -116,9 +118,10 @@ export default function Filters({
                 />
               </div>
 
+              {/* Footer buttons */}
               <div className="mt-6 flex justify-end gap-3">
                 <button
-                  onClick={() => setOpen(false)}
+                  onClick={() => setOpenFilters(false)}
                   className="rounded-md border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:bg-gray-100"
                 >
                   Cancel
@@ -134,9 +137,59 @@ export default function Filters({
           </>
         )}
       </AnimatePresence>
+
+      {/* AnimatePresence for Export */}
+      <AnimatePresence>
+        {openExport && (
+          <>
+            <motion.div
+              key="backdrop-export"
+              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => setOpenExport(false)}
+            />
+            <motion.aside
+              key="sheet-export"
+              className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
+              variants={sheetVariants}
+              initial="hidden"
+              animate="visible"
+              exit="hidden"
+            >
+              <header className="mb-4 flex items-center justify-between">
+                <h2 className="text-lg font-semibold">Export</h2>
+                <button
+                  onClick={() => setOpenExport(false)}
+                  className="rounded-full p-1 text-gray-500 transition hover:bg-gray-100 hover:text-gray-700"
+                  aria-label="Close export"
+                >
+                  <X className="size-5" />
+                </button>
+              </header>
+
+              {/* Export content (здесь можешь вставить любое содержимое) */}
+              <p className="text-sm text-gray-600">
+                Select the format and date range to export your data.
+              </p>
+              <div className="mt-4 space-y-3">
+                <button className="w-full rounded-md bg-fuchsia-600 px-4 py-2 text-sm text-white shadow hover:bg-fuchsia-700">
+                  Export as PDF
+                </button>
+                <button className="w-full rounded-md bg-gray-100 px-4 py-2 text-sm text-gray-700 shadow hover:bg-gray-200">
+                  Export as CSV
+                </button>
+              </div>
+            </motion.aside>
+          </>
+        )}
+      </AnimatePresence>
     </>
   );
 }
+
+// -------- Button, Field, CheckGroup — те же, без изменений --------
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   icon: React.ReactNode;
@@ -153,6 +206,7 @@ function Button({ icon, label, ...props }: ButtonProps) {
     </button>
   );
 }
+
 interface FieldProps {
   label: string;
   children: React.ReactNode;
@@ -167,6 +221,7 @@ function Field({ label, children }: FieldProps) {
     </fieldset>
   );
 }
+
 interface CheckGroupProps {
   label: string;
   options: string[];

@@ -1,19 +1,19 @@
 "use client";
 
 import OrderRow from "../components/OrderRow";
-import { orders } from "../app/lib/data";
-import { useSearchParams } from "next/navigation";
 
-export default function OrdersTable() {
-  const searchParams = useSearchParams();
-  const status = searchParams.get("status") || "all";
+interface Order {
+  id: string;
+  customerName: string;
+  date: string;
+  price: number;
+  paymentType: string;
+  orderType: string;
+  status: string;
+  platform: string;
+}
 
-  // Фильтруем заказы по статусу
-  const filteredOrders =
-    status === "all"
-      ? orders
-      : orders.filter((order) => order.status === status);
-
+export default function OrdersTable({ orders }: { orders: Order[] }) {
   return (
     <div className="overflow-x-auto rounded-xl shadow-sm">
       <table className="min-w-full table-auto">
@@ -31,14 +31,12 @@ export default function OrdersTable() {
           </tr>
         </thead>
         <tbody>
-          {filteredOrders.length > 0 ? (
-            filteredOrders.map((order) => (
-              <OrderRow key={order.id} order={order} />
-            ))
+          {orders.length > 0 ? (
+            orders.map((order) => <OrderRow key={order.id} order={order} />)
           ) : (
             <tr>
               <td colSpan={9} className="text-center py-4 text-gray-400">
-                No orders with status: <strong>{status}</strong>
+                No matching orders
               </td>
             </tr>
           )}
