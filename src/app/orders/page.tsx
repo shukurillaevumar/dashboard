@@ -3,6 +3,7 @@ import Tabs from "../../components/Tabs";
 import SearchBar from "../../components/SearchBar";
 import Filters from "../../components/Filters";
 import Pagination from "@/components/Pagination";
+import { Suspense } from "react";
 
 export default function OrdersPage() {
   return (
@@ -12,7 +13,9 @@ export default function OrdersPage() {
         <Tabs />
         <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
           <SearchBar />
-          <Filters />
+          <Suspense fallback={<div>Loading filters...</div>}>
+            <Filters />
+          </Suspense>
         </div>
         <OrdersTable />
       </div>
