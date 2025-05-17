@@ -40,36 +40,38 @@ export default function OrdersPage() {
   );
 
   return (
-    <div className="flex flex-col justify-between min-h-screen p-4 bg-white border border-gray-200 rounded-xl">
-      <div className="space-y-4">
-        <p className="text-lg font-semibold">List of orders</p>
+    <Suspense fallback={null}>
+      <div className="flex flex-col justify-between min-h-screen p-4 bg-white border border-gray-200 rounded-xl">
+        <div className="space-y-4">
+          <p className="text-lg font-semibold">List of orders</p>
 
-        {/* ✅ Tabs (фильтрация по статусу) */}
-        <Suspense fallback={null}>
-          <Tabs />
-        </Suspense>
+          {/* ✅ Tabs (фильтрация по статусу) */}
+          <Suspense fallback={null}>
+            <Tabs />
+          </Suspense>
 
-        {/* ✅ SearchBar и Filters */}
-        <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
-          <SearchBar />
-          <Filters />
+          {/* ✅ SearchBar и Filters */}
+          <div className="flex items-center justify-between bg-gray-100 p-2 rounded-xl">
+            <SearchBar />
+            <Filters />
+          </div>
+
+          {/* ✅ Таблица заказов */}
+          <OrdersTable orders={paginatedOrders} />
         </div>
 
-        {/* ✅ Таблица заказов */}
-        <OrdersTable orders={paginatedOrders} />
+        {/* ✅ Пагинация */}
+        <Pagination
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          currentPage={currentPage}
+          onPageChange={setCurrentPage}
+          onItemsPerPageChange={(value) => {
+            setItemsPerPage(value);
+            setCurrentPage(1);
+          }}
+        />
       </div>
-
-      {/* ✅ Пагинация */}
-      <Pagination
-        totalItems={totalItems}
-        itemsPerPage={itemsPerPage}
-        currentPage={currentPage}
-        onPageChange={setCurrentPage}
-        onItemsPerPageChange={(value) => {
-          setItemsPerPage(value);
-          setCurrentPage(1);
-        }}
-      />
-    </div>
+    </Suspense>
   );
 }
