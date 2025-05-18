@@ -46,7 +46,7 @@ export default function Filters({
           <>
             <motion.div
               key="backdrop-filters"
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -54,7 +54,7 @@ export default function Filters({
             />
             <motion.aside
               key="sheet-filters"
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
+              className="fixed inset-x-0 bottom-0 z-[9999] rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
               variants={sheetVariants}
               initial="hidden"
               animate="visible"
@@ -143,8 +143,8 @@ export default function Filters({
         {openExport && (
           <>
             <motion.div
-              key="backdrop-export"
-              className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm"
+              key="backdrop-filters"
+              className="fixed inset-0 z-[9998] bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -152,7 +152,7 @@ export default function Filters({
             />
             <motion.aside
               key="sheet-export"
-              className="fixed inset-x-0 bottom-0 z-50 rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
+              className="fixed inset-x-0 bottom-0 z-[9999] rounded-t-2xl bg-white p-6 shadow-2xl sm:mx-auto sm:max-w-md"
               variants={sheetVariants}
               initial="hidden"
               animate="visible"
